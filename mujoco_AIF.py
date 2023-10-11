@@ -1,6 +1,7 @@
 from gym import wrappers
 from math import cos, sin, acos, asin, atan, pi
 import numpy as np
+import gym
 
 env = gym.make('Kinova-v0')
 
@@ -67,11 +68,12 @@ for i in range(start + 10000 + end):
     z = np.random.normal(0, 0.001, size=q.shape[0])
     z_prime = np.random.normal(0, 0.001, size=q.shape[0])
     
-    y_q[:, i] = obs[:, i] + z
-    y_dq[:, i] = obs[:, i] + z_prime
-    
     action = u
     obs, reward, done, info = env.step(action)
+
+    #センサ観測はobs
+    y_q[:, i] = obs[:, i] + z
+    y_dq[:, i] = obs[:, i] + z_prime
 
     # Compute free-energy in generalised coordinates
     F[i] = 0.5 * (y_q[:, i] - mu[:, i]).T @ P_y0 @ (y_q[:, i] - mu[:, i]) + \
